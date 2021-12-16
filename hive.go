@@ -799,6 +799,122 @@ func (c *Cursor) RowMap(ctx context.Context) map[string]interface{} {
 	return m
 }
 
+func (c *Cursor) FetchAsArray(ctx context.Context) []interface{} {
+	c.Err = nil
+	c.fetchIfEmpty(ctx)
+	if c.Err != nil {
+		return nil
+	}
+
+	d := c.Description()
+	if c.Err != nil || len(d) != len(c.queue) {
+		return nil
+	}
+	m := make([]interface{}, len(c.queue))
+	for i := 0; i < len(c.queue); i++ {
+		columnType := d[i][1]
+		if columnType == "BOOLEAN_TYPE" {
+			if isNull(c.queue[i].BoolVal.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].BoolVal.Values[c.columnIndex]
+			}
+		} else if columnType == "TINYINT_TYPE" {
+			if isNull(c.queue[i].ByteVal.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].ByteVal.Values[c.columnIndex]
+			}
+		} else if columnType == "SMALLINT_TYPE" {
+			if isNull(c.queue[i].I16Val.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].I16Val.Values[c.columnIndex]
+			}
+		} else if columnType == "INT_TYPE" {
+			if isNull(c.queue[i].I32Val.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].I32Val.Values[c.columnIndex]
+			}
+		} else if columnType == "BIGINT_TYPE" {
+			if isNull(c.queue[i].I64Val.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].I64Val.Values[c.columnIndex]
+			}
+		} else if columnType == "FLOAT_TYPE" {
+			if isNull(c.queue[i].DoubleVal.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].DoubleVal.Values[c.columnIndex]
+			}
+		} else if columnType == "DOUBLE_TYPE" {
+			if isNull(c.queue[i].DoubleVal.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].DoubleVal.Values[c.columnIndex]
+			}
+		} else if columnType == "STRING_TYPE" || columnType == "VARCHAR_TYPE" || columnType == "CHAR_TYPE" {
+			if isNull(c.queue[i].StringVal.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].StringVal.Values[c.columnIndex]
+			}
+		} else if columnType == "TIMESTAMP_TYPE" {
+			if isNull(c.queue[i].StringVal.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].StringVal.Values[c.columnIndex]
+			}
+		} else if columnType == "DATE_TYPE" {
+			if isNull(c.queue[i].StringVal.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].StringVal.Values[c.columnIndex]
+			}
+		} else if columnType == "BINARY_TYPE" {
+			if isNull(c.queue[i].BinaryVal.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].BinaryVal.Values[c.columnIndex]
+			}
+		} else if columnType == "ARRAY_TYPE" {
+			if isNull(c.queue[i].StringVal.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].StringVal.Values[c.columnIndex]
+			}
+		} else if columnType == "MAP_TYPE" {
+			if isNull(c.queue[i].StringVal.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].StringVal.Values[c.columnIndex]
+			}
+		} else if columnType == "STRUCT_TYPE" {
+			if isNull(c.queue[i].StringVal.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].StringVal.Values[c.columnIndex]
+			}
+		} else if columnType == "UNION_TYPE" {
+			if isNull(c.queue[i].StringVal.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].StringVal.Values[c.columnIndex]
+			}
+		} else if columnType == "DECIMAL_TYPE" {
+			if isNull(c.queue[i].StringVal.Nulls, c.columnIndex) {
+				m[i] = nil
+			} else {
+				m[i] = c.queue[i].StringVal.Values[c.columnIndex]
+			}
+		}
+	}
+	c.columnIndex++
+	return m
+}
+
 // FetchOne returns one row and advances the cursor one
 func (c *Cursor) FetchOne(ctx context.Context, dests ...interface{}) {
 	c.Err = nil
