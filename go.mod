@@ -1,4 +1,4 @@
-module github.com/beltran/gohive
+module github.com/Wujiao233/gohive
 
 go 1.14
 
